@@ -1,32 +1,33 @@
-//
-//  Swifty_protein42App.swift
-//  Swifty_protein42
-//
-//  Created by Celine Junker on 24/11/2024.
-//
-
 import SwiftUI
-import SwiftData
 
 @main
 struct Swifty_protein42App: App {
-    var sharedModelContainer: ModelContainer = {
-        let schema = Schema([
-            Item.self,
-        ])
-        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
-
-        do {
-            return try ModelContainer(for: schema, configurations: [modelConfiguration])
-        } catch {
-            fatalError("Could not create ModelContainer: \(error)")
-        }
-    }()
+    @Environment(\.scenePhase) var scenePhase
+    @StateObject var appState = AppState()
+    @AppStorage("hasLaunchedBefore") var hasLaunchedBefore = false
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            if !hasLaunchedBefore {
+                LaunchScreen()
+                    .onAppear {
+                        hasLaunchedBefore = true
+                    }
+            } else if appState.isLoggedIn {
+                
+                ProteinListView()
+                    .environmentObject(appState)
+                
+            } else {
+                
+                LoginView()
+                    .environmentObject(appState)
+            }
         }
-        .modelContainer(sharedModelContainer)
+        .onChange(of: scenePhase) {
+            if scenePhase == .active {
+                appState.isLoggedIn = false
+            }
+        }
     }
 }

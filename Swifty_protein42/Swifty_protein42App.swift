@@ -31,6 +31,9 @@ struct Swifty_protein42App: App {
                 if newPhase == .active {
                     print("App is active")
                 }
+                else {
+                    appState.isLoggedIn = false
+                }
             }
         }
     }

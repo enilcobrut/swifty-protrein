@@ -26,6 +26,7 @@
 		4445D4152CF3A46F00C4C754 /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4445D4142CF3A46F00C4C754 /* StringExtension.swift */; };
 		4445D4192CF6142C00C4C754 /* SceneExportDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4445D4182CF6142C00C4C754 /* SceneExportDelegate.swift */; };
 		4445D41B2CF6261F00C4C754 /* ObservableObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4445D41A2CF6261F00C4C754 /* ObservableObject.swift */; };
+		449AB38F2D1315780027FE9B /* info.plist in Sources */ = {isa = PBXBuildFile; fileRef = 449AB38E2D1315240027FE9B /* info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -49,6 +50,7 @@
 		4445D4142CF3A46F00C4C754 /* StringExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtension.swift; sourceTree = "<group>"; };
 		4445D4182CF6142C00C4C754 /* SceneExportDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneExportDelegate.swift; sourceTree = "<group>"; };
 		4445D41A2CF6261F00C4C754 /* ObservableObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservableObject.swift; sourceTree = "<group>"; };
+		449AB38E2D1315240027FE9B /* info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -82,6 +84,7 @@
 			isa = PBXGroup;
 			children = (
 				4445D4082CF3A01800C4C754 /* ligands.txt */,
+				449AB38E2D1315240027FE9B /* info.plist */,
 				4445D4022CF361C800C4C754 /* KeychainHelper.swift */,
 				4445D4042CF3624E00C4C754 /* RegistrationPopupView.swift */,
 				4445D4062CF3718100C4C754 /* ProteinListView.swift */,
@@ -194,6 +197,7 @@
 				4445D4152CF3A46F00C4C754 /* StringExtension.swift in Sources */,
 				4445D4112CF3A44200C4C754 /* ShareSheet.swift in Sources */,
 				4445D3EB2CF3558100C4C754 /* ContentView.swift in Sources */,
+				449AB38F2D1315780027FE9B /* info.plist in Sources */,
 				4445D4032CF361C800C4C754 /* KeychainHelper.swift in Sources */,
 				4445D4192CF6142C00C4C754 /* SceneExportDelegate.swift in Sources */,
 				4445D41B2CF6261F00C4C754 /* ObservableObject.swift in Sources */,

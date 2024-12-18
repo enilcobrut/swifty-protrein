@@ -24,11 +24,13 @@ struct LoginView: View {
                     .padding()
                     .background(Color(.secondarySystemBackground))
                     .cornerRadius(5)
-                    .onChange(of: username) {
-                        isBiometricEnabledForUser = KeychainHelper.isBiometricEnabled(for: username)
+                    .onChange(of: username) { newUser in
+                        isBiometricEnabledForUser = KeychainHelper.isBiometricEnabled(for: newUser)
                     }
 
-                if !isBiometricEnabledForUser || !isBiometricAvailable {
+                // Si la biométrie est activée et disponible, on ne demande pas de mot de passe,
+                // car il n'est pas stocké dans ce cas.
+                if !isBiometricAvailable || !isBiometricEnabledForUser {
                     SecureField("Mot de passe", text: $password)
                         .textContentType(.password)
                         .padding()
@@ -84,6 +86,9 @@ struct LoginView: View {
                         }
                     }
 
+                // RegistrationPopupView : Lorsqu’on valide l’inscription :
+                // - Si biométrie dispo et choisie => setBiometricPreference(true), ne pas savePassword
+                // - Sinon => savePassword + setBiometricPreference(false)
                 RegistrationPopupView(showRegistration: $showRegistration)
                     .environmentObject(appState)
                     .transition(.scale)
@@ -91,14 +96,18 @@ struct LoginView: View {
         }
         .onAppear {
             checkBiometricAvailability()
-            isBiometricEnabledForUser = KeychainHelper.isBiometricEnabled(for: username)
+            if !username.isEmpty {
+                isBiometricEnabledForUser = KeychainHelper.isBiometricEnabled(for: username)
+            } else {
+                isBiometricEnabledForUser = false
+            }
         }
         .alert(isPresented: $showError) {
             Alert(title: Text("Erreur"), message: Text(errorMessage), dismissButton: .default(Text("OK")))
         }
     }
 
-    // Fonction pour vérifier la disponibilité de l'authentification biométrique
+    // Vérification de la disponibilité de la biométrie
     func checkBiometricAvailability() {
         let context = LAContext()
         var error: NSError?
@@ -108,10 +117,9 @@ struct LoginView: View {
         } else {
             isBiometricAvailable = false
             if let err = error {
-                print("Biometric not available, error: \(err)")
+                print("Biométrie indisponible, erreur: \(err)")
             }
         }
-
     }
 
     // Fonction de connexion
@@ -122,9 +130,11 @@ struct LoginView: View {
             return
         }
 
+        // Si la biométrie est activée et disponible, on tente la biométrie.
         if isBiometricAvailable && isBiometricEnabledForUser {
             authenticateWithBiometrics()
         } else {
+            // Ici, on s'attend à ce qu'un mot de passe soit enregistré si la biométrie n'est pas disponible.
             guard !password.isEmpty else {
                 errorMessage = "Veuillez entrer votre mot de passe."
                 showError = true
@@ -140,7 +150,7 @@ struct LoginView: View {
         }
     }
 
-    // Fonction pour l'authentification biométrique
+    // Authentification biométrique
     func authenticateWithBiometrics() {
         let context = LAContext()
         let reason = "Connectez-vous pour accéder à l'application"
@@ -148,13 +158,10 @@ struct LoginView: View {
         context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: reason) { success, authenticationError in
             DispatchQueue.main.async {
                 if success {
-                    // Vérifier si l'utilisateur existe
-                    if KeychainHelper.getPassword(for: username) != nil {
-                        proceedToMainView()
-                    } else {
-                        errorMessage = "Aucun compte associé à ce nom d'utilisateur."
-                        showError = true
-                    }
+                    // Pas de mot de passe stocké si biométrie activée, donc on vérifie juste si l'user existe
+                    // Par exemple, si vous stockez au moins quelque chose qui indique que l'user est créé
+                    // Ici, on suppose qu'on sait que l'utilisateur existe dès l'instant où la biométrie est activée.
+                    proceedToMainView()
                 } else {
                     errorMessage = authenticationError?.localizedDescription ?? "Échec de l'authentification biométrique."
                     showError = true
@@ -163,15 +170,8 @@ struct LoginView: View {
         }
     }
 
-    // Fonction pour passer à la vue principale
+    // Transition vers la vue principale
     func proceedToMainView() {
         appState.isLoggedIn = true
-        print("here !")
-    }
-}
-
-struct LoginView_Previews: PreviewProvider {
-    static var previews: some View {
-        LoginView()
     }
 }

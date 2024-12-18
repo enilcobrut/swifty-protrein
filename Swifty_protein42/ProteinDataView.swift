@@ -28,24 +28,24 @@ struct ProteinDataView: View {
             .edgesIgnoringSafeArea(.all)
 
             HStack {
-                Button(action: {
-                    print("Bouton partager fichier 3D cliqué")
-                    if let fileURL = saveSceneToFile() {
-                        print("Fichier 3D sauvegardé avec succès : \(fileURL)")
-                        shareURL = fileURL
-                        identifiableImage = nil
-                        showURLSheet = true
-                    } else {
-                        print("Erreur lors de l'enregistrement du fichier 3D")
-                    }
-                }) {
-                    Text("Partager le fichier 3D")
-                        .padding()
-                        .background(sceneIsReady ? Color.green : Color.gray)
-                        .foregroundColor(.white)
-                        .cornerRadius(8)
-                }
-                .disabled(!sceneIsReady)
+//                Button(action: {
+//                    print("Bouton partager fichier 3D cliqué")
+//                    if let fileURL = saveSceneToFile() {
+//                        print("Fichier 3D sauvegardé avec succès : \(fileURL)")
+//                        shareURL = fileURL
+//                        identifiableImage = nil
+//                        showURLSheet = true
+//                    } else {
+//                        print("Erreur lors de l'enregistrement du fichier 3D")
+//                    }
+//                }) {
+//                    Text("Partager le fichier 3D")
+//                        .padding()
+//                        .background(sceneIsReady ? Color.green : Color.gray)
+//                        .foregroundColor(.white)
+//                        .cornerRadius(8)
+//                }
+            //    .disabled(!sceneIsReady)
 
                 Button(action: {
                     print("Bouton partager image cliqué")

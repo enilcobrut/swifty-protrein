@@ -77,4 +77,14 @@ class KeychainHelper {
         }
         return false
     }
+
+    // Fonction optionnelle pour supprimer le mot de passe, si vous en avez besoin.
+    static func deletePassword(for account: String) {
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrAccount as String: account
+        ]
+
+        SecItemDelete(query as CFDictionary)
+    }
 }

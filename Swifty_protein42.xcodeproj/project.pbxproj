@@ -8,8 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		4445D3E92CF3558100C4C754 /* Swifty_protein42App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4445D3E82CF3558100C4C754 /* Swifty_protein42App.swift */; };
-		4445D3EB2CF3558100C4C754 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4445D3EA2CF3558100C4C754 /* ContentView.swift */; };
-		4445D3ED2CF3558100C4C754 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4445D3EC2CF3558100C4C754 /* Item.swift */; };
 		4445D3EF2CF3558300C4C754 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4445D3EE2CF3558300C4C754 /* Assets.xcassets */; };
 		4445D3F22CF3558300C4C754 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4445D3F12CF3558300C4C754 /* Preview Assets.xcassets */; };
 		4445D3F92CF3575800C4C754 /* LaunchScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4445D3F82CF3575800C4C754 /* LaunchScreen.swift */; };
@@ -24,16 +22,12 @@
 		4445D4112CF3A44200C4C754 /* ShareSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4445D4102CF3A44200C4C754 /* ShareSheet.swift */; };
 		4445D4132CF3A45B00C4C754 /* Atom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4445D4122CF3A45B00C4C754 /* Atom.swift */; };
 		4445D4152CF3A46F00C4C754 /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4445D4142CF3A46F00C4C754 /* StringExtension.swift */; };
-		4445D4192CF6142C00C4C754 /* SceneExportDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4445D4182CF6142C00C4C754 /* SceneExportDelegate.swift */; };
-		4445D41B2CF6261F00C4C754 /* ObservableObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4445D41A2CF6261F00C4C754 /* ObservableObject.swift */; };
 		449AB38F2D1315780027FE9B /* info.plist in Sources */ = {isa = PBXBuildFile; fileRef = 449AB38E2D1315240027FE9B /* info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		4445D3E52CF3558100C4C754 /* Swifty_protein42.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Swifty_protein42.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4445D3E82CF3558100C4C754 /* Swifty_protein42App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Swifty_protein42App.swift; sourceTree = "<group>"; };
-		4445D3EA2CF3558100C4C754 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		4445D3EC2CF3558100C4C754 /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
 		4445D3EE2CF3558300C4C754 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4445D3F12CF3558300C4C754 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		4445D3F82CF3575800C4C754 /* LaunchScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchScreen.swift; sourceTree = "<group>"; };
@@ -48,8 +42,6 @@
 		4445D4102CF3A44200C4C754 /* ShareSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareSheet.swift; sourceTree = "<group>"; };
 		4445D4122CF3A45B00C4C754 /* Atom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Atom.swift; sourceTree = "<group>"; };
 		4445D4142CF3A46F00C4C754 /* StringExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtension.swift; sourceTree = "<group>"; };
-		4445D4182CF6142C00C4C754 /* SceneExportDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneExportDelegate.swift; sourceTree = "<group>"; };
-		4445D41A2CF6261F00C4C754 /* ObservableObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservableObject.swift; sourceTree = "<group>"; };
 		449AB38E2D1315240027FE9B /* info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -90,17 +82,13 @@
 				4445D4062CF3718100C4C754 /* ProteinListView.swift */,
 				4445D3FE2CF3609D00C4C754 /* LoginView.swift */,
 				4445D3FC2CF35F7800C4C754 /* AppState.swift */,
-				4445D41A2CF6261F00C4C754 /* ObservableObject.swift */,
 				4445D3F82CF3575800C4C754 /* LaunchScreen.swift */,
 				4445D3E82CF3558100C4C754 /* Swifty_protein42App.swift */,
 				4445D40E2CF3A41E00C4C754 /* MoleculeSceneView.swift */,
 				4445D40C2CF3A3D400C4C754 /* ProteinDataView.swift */,
-				4445D4182CF6142C00C4C754 /* SceneExportDelegate.swift */,
 				4445D4122CF3A45B00C4C754 /* Atom.swift */,
 				4445D4102CF3A44200C4C754 /* ShareSheet.swift */,
-				4445D3EA2CF3558100C4C754 /* ContentView.swift */,
 				4445D4142CF3A46F00C4C754 /* StringExtension.swift */,
-				4445D3EC2CF3558100C4C754 /* Item.swift */,
 				4445D3EE2CF3558300C4C754 /* Assets.xcassets */,
 				4445D3F02CF3558300C4C754 /* Preview Content */,
 			);
@@ -196,12 +184,8 @@
 				4445D40F2CF3A41E00C4C754 /* MoleculeSceneView.swift in Sources */,
 				4445D4152CF3A46F00C4C754 /* StringExtension.swift in Sources */,
 				4445D4112CF3A44200C4C754 /* ShareSheet.swift in Sources */,
-				4445D3EB2CF3558100C4C754 /* ContentView.swift in Sources */,
 				449AB38F2D1315780027FE9B /* info.plist in Sources */,
 				4445D4032CF361C800C4C754 /* KeychainHelper.swift in Sources */,
-				4445D4192CF6142C00C4C754 /* SceneExportDelegate.swift in Sources */,
-				4445D41B2CF6261F00C4C754 /* ObservableObject.swift in Sources */,
-				4445D3ED2CF3558100C4C754 /* Item.swift in Sources */,
 				4445D3E92CF3558100C4C754 /* Swifty_protein42App.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -26,9 +26,10 @@ struct RegistrationPopupView: View {
                 .background(Color(.secondarySystemBackground))
                 .cornerRadius(5)
 
+            // Only show the password field if biometrics not chosen
             if !isBiometricChosen {
                 SecureField("Password", text: $password)
-                    .textContentType(.newPassword)
+                    .textContentType(.none)
                     .padding()
                     .background(Color(.secondarySystemBackground))
                     .cornerRadius(5)
@@ -56,7 +57,6 @@ struct RegistrationPopupView: View {
                 .foregroundColor(.white)
                 .cornerRadius(5)
             }
-
         }
         .padding()
         .alert(isPresented: $showError) {
@@ -77,26 +77,35 @@ struct RegistrationPopupView: View {
 
         let isBioAvailable = isBiometricDeviceAvailable()
 
-        if isBiometricChosen && isBioAvailable {
-            authenticateBiometric { success in
-                if success {
-                    KeychainHelper.saveBiometricPreference(true, for: username)
-                    sendRegistrationRequest(username: username, password: nil, useBiometry: true) { success in
-                        if success {
-                            DispatchQueue.main.async {
-                                withAnimation {
-                                    showRegistration = false
+        if isBiometricChosen {
+            
+            // Biometrics chosen, no password required if available
+            if isBioAvailable {
+                // Authenticate biometrically
+                authenticateBiometric { success in
+                    if success {
+                        KeychainHelper.saveBiometricPreference(true, for: username)
+                        sendRegistrationRequest(username: username, password: nil, useBiometry: true) { success in
+                            if success {
+                                DispatchQueue.main.async {
+                                    withAnimation {
+                                        showRegistration = false
+                                    }
                                 }
+                            } else {
+                                setError("Register failed")
                             }
-                        } else {
-                            setError("Register failed")
                         }
+                    } else {
+                        setError("Biometric authentication failed")
                     }
-                } else {
-                    setError("Biometric authentication failed")
                 }
+            } else {
+                // Biometrics chosen but not available
+                setError("Biometric not available on this device. Please deactivate Touch ID / Face ID or choose a password.")
             }
         } else {
+            // Biometrics not chosen, password is mandatory
             guard !password.isEmpty else {
                 setError("Enter a password")
                 return
@@ -144,7 +153,6 @@ struct RegistrationPopupView: View {
     func sendRegistrationRequest(username: String, password: String?, useBiometry: Bool, completion: @escaping (Bool) -> Void) {
         // Simulate a network request
         DispatchQueue.global().asyncAfter(deadline: .now() + 1) {
-            // Mock success
             LocalUserStore.saveUsername(username)
             completion(true)
         }

@@ -11,6 +11,11 @@ struct LoginView: View {
     @State private var showError = false
     @State private var errorMessage = ""
 
+    private var userHasPassword: Bool {
+        guard !username.isEmpty else { return false }
+        return KeychainHelper.getPassword(for: username) != nil
+    }
+
     var body: some View {
         ZStack {
             VStack {
@@ -24,11 +29,23 @@ struct LoginView: View {
                     .padding()
                     .background(Color(.secondarySystemBackground))
                     .cornerRadius(5)
-                    .onChange(of: username) { newUser in
+                    .onChange(of: username) { oldUser, newUser in
                         isBiometricEnabledForUser = KeychainHelper.isBiometricEnabled(for: newUser)
                     }
 
-                if !isBiometricAvailable || !isBiometricEnabledForUser {
+                // Show the toggle if biometrics are available and we have a username.
+                // Always show it regardless of existing preferences.
+                if isBiometricAvailable && !username.isEmpty {
+                    Toggle("Use Face ID / Touch ID", isOn: $isBiometricEnabledForUser)
+                        .padding()
+                        .onChange(of: isBiometricEnabledForUser) { oldValue, newValue in
+                            KeychainHelper.saveBiometricPreference(newValue, for: username)
+                        }
+                }
+
+                // If toggle ON and no password -> No password field (biometric-only).
+                // Else show password field.
+                if !(isBiometricEnabledForUser && !userHasPassword) {
                     SecureField("Password", text: $password)
                         .textContentType(.password)
                         .padding()
@@ -36,6 +53,10 @@ struct LoginView: View {
                         .cornerRadius(5)
                 }
 
+                // If toggle ON and user has no password, show only biometric login button.
+                // If toggle ON and user has password, show both biometric and normal login.
+                // If toggle OFF, show only normal login.
+                
                 if isBiometricAvailable && isBiometricEnabledForUser {
                     Button(action: authenticateWithBiometrics) {
                         Text("Connect with Touch ID / Face ID")
@@ -47,14 +68,17 @@ struct LoginView: View {
                     .cornerRadius(5)
                 }
 
-                Button(action: login) {
-                    Text("Connect")
-                        .frame(maxWidth: .infinity)
+                // If toggle OFF or userHasPassword is true, show Connect button for password login
+                if !isBiometricEnabledForUser || userHasPassword {
+                    Button(action: login) {
+                        Text("Connect")
+                            .frame(maxWidth: .infinity)
+                    }
+                    .padding()
+                    .background(Color.blue)
+                    .foregroundColor(.white)
+                    .cornerRadius(5)
                 }
-                .padding()
-                .background(Color.blue)
-                .foregroundColor(.white)
-                .cornerRadius(5)
 
                 Button(action: {
                     withAnimation {
@@ -81,7 +105,6 @@ struct LoginView: View {
                     .edgesIgnoringSafeArea(.all)
                 
                 RegistrationPopupView(showRegistration: $showRegistration) { errorText in
-                    // If an error occurs inside registration, show it here
                     self.errorMessage = errorText
                     self.showError = true
                 }
@@ -126,31 +149,45 @@ struct LoginView: View {
             return
         }
 
-        if isBiometricAvailable && isBiometricEnabledForUser {
-            authenticateWithBiometrics()
-        } else {
-            guard !password.isEmpty else {
-                errorMessage = "Please enter a password"
-                showError = true
-                return
-            }
+        // If toggle is ON and user has NO password -> must use biometrics
+        if isBiometricEnabledForUser && !userHasPassword {
+            errorMessage = "Please use Touch ID / Face ID to log in."
+            showError = true
+            return
+        }
 
-            if let savedPassword = KeychainHelper.getPassword(for: username), savedPassword == password {
-                proceedToMainView()
-            } else {
-                errorMessage = "Wrong identity or password"
-                showError = true
-            }
+        // Otherwise, a password is required for password-based login
+        guard !password.isEmpty else {
+            errorMessage = "Please enter a password"
+            showError = true
+            return
+        }
+
+        if let savedPassword = KeychainHelper.getPassword(for: username), savedPassword == password {
+            proceedToMainView()
+        } else {
+            errorMessage = "Wrong identity or password"
+            showError = true
         }
     }
 
     func authenticateWithBiometrics() {
+        // If toggle ON and user has no password, then this is the only method.
+        // If user does have a password, this is an alternative login method.
+        
         let context = LAContext()
         let reason = "Connect to your account"
         context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: reason) { success, authenticationError in
             DispatchQueue.main.async {
                 if success {
-                    proceedToMainView()
+                    // If no password is stored (biometric-only user), just proceed.
+                    // If password is stored, then we trust biometrics as well.
+                    if !userHasPassword || userHasPassword {
+                        proceedToMainView()
+                    } else {
+                        errorMessage = "No account found for this username."
+                        showError = true
+                    }
                 } else {
                     errorMessage = authenticationError?.localizedDescription ?? "Biometric authentication failed."
                     showError = true

@@ -50,7 +50,7 @@ struct ProteinListView: View {
 
                 // Indicateur de chargement
                 if isLoading {
-                    ProgressView("Téléchargement...")
+                    ProgressView("Loading...")
                         .padding()
                 }
 

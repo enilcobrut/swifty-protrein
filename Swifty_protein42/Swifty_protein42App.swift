@@ -27,14 +27,21 @@ struct Swifty_protein42App: App {
                     }
                 }
             }
-            .onChange(of: scenePhase) { newPhase in
-                if newPhase == .active {
+            .onChange(of: scenePhase) { oldPhase, newPhase in
+                switch newPhase {
+                case .active:
                     print("App is active")
-                }
-                else {
+                case .inactive:
+                    print("App inactive")
+                case .background:
+                    print("App in background")
                     appState.isLoggedIn = false
+                @unknown default:
+                    break
                 }
             }
+
+
         }
     }
 }

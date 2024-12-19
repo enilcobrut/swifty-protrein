@@ -37,6 +37,7 @@ class KeychainHelper {
         }
         return nil
     }
+    
 
     static func saveBiometricPreference(_ enabled: Bool, for account: String) {
         let key = "\(account)_biometric"

@@ -28,42 +28,23 @@ struct ProteinDataView: View {
             .edgesIgnoringSafeArea(.all)
 
             HStack {
-//                Button(action: {
-//                    print("Bouton partager fichier 3D cliqué")
-//                    if let fileURL = saveSceneToFile() {
-//                        print("Fichier 3D sauvegardé avec succès : \(fileURL)")
-//                        shareURL = fileURL
-//                        identifiableImage = nil
-//                        showURLSheet = true
-//                    } else {
-//                        print("Erreur lors de l'enregistrement du fichier 3D")
-//                    }
-//                }) {
-//                    Text("Partager le fichier 3D")
-//                        .padding()
-//                        .background(sceneIsReady ? Color.green : Color.gray)
-//                        .foregroundColor(.white)
-//                        .cornerRadius(8)
-//                }
-            //    .disabled(!sceneIsReady)
 
                 Button(action: {
                     print("Bouton partager image cliqué")
                     print("sceneIsReady: \(sceneIsReady)")
                     print("scnView is nil?: \(scnView == nil)")
                     
-                    // On attend un cycle pour être sûr que la vue est prête
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                         if let image = generateSnapshot() {
                             print("Image capturée avec succès : \(image)")
-                            // On met l'image dans un wrapper Identifiable
+
                             identifiableImage = IdentifiableImage(image: image)
                         } else {
                             print("Erreur lors de la génération de l'image")
                         }
                     }
                 }) {
-                    Text("Partager l'image")
+                    Text("Share Image")
                         .padding()
                         .background(sceneIsReady ? Color.blue : Color.gray)
                         .foregroundColor(.white)
@@ -75,8 +56,8 @@ struct ProteinDataView: View {
         }
         .navigationTitle("Ligand \(ligandId)")
         .navigationBarTitleDisplayMode(.inline)
-        .onChange(of: sceneIsReady) { newValue in
-            print("sceneIsReady changed to \(newValue)")
+        .onChange(of: sceneIsReady) { oldValue, newValue in
+            print("sceneIsReady changed from \(oldValue) to \(newValue)")
         }
         // Sheet pour le fichier 3D
         .sheet(isPresented: $showURLSheet) {
@@ -107,7 +88,7 @@ struct ProteinDataView: View {
         let fileURL = documentsURL.appendingPathComponent(fileName)
 
         let options = [SCNSceneExportDestinationURL: fileURL] as [String: Any]
-        try? scene.write(to: fileURL, options: options, delegate: nil, progressHandler: nil)
+        scene.write(to: fileURL, options: options, delegate: nil, progressHandler: nil)
         return fileURL
     }
 

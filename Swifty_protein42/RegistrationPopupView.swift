@@ -11,33 +11,34 @@ struct RegistrationPopupView: View {
     @State private var showError = false
     @State private var errorMessage = ""
 
+    var onError: (String) -> Void
+
     var body: some View {
         VStack(spacing: 20) {
-            Text("Inscription")
+            Text("Register")
                 .font(.title)
                 .padding()
 
-            TextField("Nom d'utilisateur", text: $username)
+            TextField("Username", text: $username)
                 .textContentType(.username)
                 .autocapitalization(.none)
                 .padding()
                 .background(Color(.secondarySystemBackground))
                 .cornerRadius(5)
 
-            // Si la biométrie n'est pas choisie, on demande un mot de passe
             if !isBiometricChosen {
-                SecureField("Mot de passe", text: $password)
+                SecureField("Password", text: $password)
                     .textContentType(.newPassword)
                     .padding()
                     .background(Color(.secondarySystemBackground))
                     .cornerRadius(5)
             }
 
-            Toggle("Utiliser Touch ID / Face ID", isOn: $isBiometricChosen)
+            Toggle("Activate Touch ID / Face ID", isOn: $isBiometricChosen)
                 .padding()
 
             HStack {
-                Button("Annuler") {
+                Button("Cancel") {
                     withAnimation {
                         showRegistration = false
                     }
@@ -47,7 +48,7 @@ struct RegistrationPopupView: View {
                 .foregroundColor(.white)
                 .cornerRadius(5)
 
-                Button("Valider") {
+                Button("Validate") {
                     register()
                 }
                 .padding()
@@ -59,30 +60,27 @@ struct RegistrationPopupView: View {
         }
         .padding()
         .alert(isPresented: $showError) {
-            Alert(title: Text("Erreur"), message: Text(errorMessage), dismissButton: .default(Text("OK")))
+            Alert(title: Text("Error"), message: Text(errorMessage), dismissButton: .default(Text("OK")))
         }
     }
 
     func register() {
         guard !username.isEmpty else {
-            errorMessage = "Veuillez entrer un nom d'utilisateur."
-            showError = true
+            setError("Enter a username")
             return
         }
 
-        // Vérifier la disponibilité de la biométrie
+        if LocalUserStore.isUsernameTaken(username) {
+            setError("Username is already taken")
+            return
+        }
+
         let isBioAvailable = isBiometricDeviceAvailable()
 
         if isBiometricChosen && isBioAvailable {
-            // Demander une authentification biométrique
             authenticateBiometric { success in
                 if success {
-                    // L'utilisateur est authentifié biométriquement pour l'inscription
-                    // On n'enregistre pas le mot de passe, juste la préférence biométrique
                     KeychainHelper.saveBiometricPreference(true, for: username)
-                    
-                    // Envoyer la requête de validation d'inscription (sans mot de passe)
-                    // Exemple:
                     sendRegistrationRequest(username: username, password: nil, useBiometry: true) { success in
                         if success {
                             DispatchQueue.main.async {
@@ -91,31 +89,22 @@ struct RegistrationPopupView: View {
                                 }
                             }
                         } else {
-                            DispatchQueue.main.async {
-                                errorMessage = "Échec de l'inscription. Veuillez réessayer."
-                                showError = true
-                            }
+                            setError("Register failed")
                         }
                     }
                 } else {
-                    // Échec biométrique
-                    errorMessage = "L'authentification biométrique a échoué."
-                    showError = true
+                    setError("Biometric authentication failed")
                 }
             }
         } else {
-            // La biométrie n'est pas choisie ou pas disponible, on demande un mot de passe
             guard !password.isEmpty else {
-                errorMessage = "Veuillez entrer un mot de passe."
-                showError = true
+                setError("Enter a password")
                 return
             }
 
-            // Enregistrer le mot de passe dans le keychain
             KeychainHelper.savePassword(password, for: username)
             KeychainHelper.saveBiometricPreference(false, for: username)
 
-            // Envoyer la requête de validation d'inscription (avec mot de passe)
             sendRegistrationRequest(username: username, password: password, useBiometry: false) { success in
                 if success {
                     DispatchQueue.main.async {
@@ -124,44 +113,39 @@ struct RegistrationPopupView: View {
                         }
                     }
                 } else {
-                    DispatchQueue.main.async {
-                        errorMessage = "Échec de l'inscription. Veuillez réessayer."
-                        showError = true
-                    }
+                    setError("Register failed")
                 }
             }
         }
     }
 
-    // Fonction de vérification de la disponibilité biométrique
+    func setError(_ message: String) {
+        DispatchQueue.main.async {
+            self.errorMessage = message
+            self.showError = true
+            self.onError(message)
+        }
+    }
+
     func isBiometricDeviceAvailable() -> Bool {
         let context = LAContext()
         var error: NSError?
         return context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error)
     }
 
-    // Authentification biométrique
     func authenticateBiometric(completion: @escaping (Bool) -> Void) {
         let context = LAContext()
-        let reason = "Veuillez vous authentifier pour finaliser votre inscription"
-
-        context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: reason) { success, authError in
+        let reason = "Please authenticate using your biometric device"
+        context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: reason) { success, _ in
             completion(success)
         }
     }
 
-    // Fonction simulant l'envoi d'une requête réseau pour l'inscription
     func sendRegistrationRequest(username: String, password: String?, useBiometry: Bool, completion: @escaping (Bool) -> Void) {
-        // Exemple fictif :
-        // Ici vous faites votre appel réseau à votre backend.
-        // Paramètres :
-        // - username
-        // - password (optionnel si useBiometry == true)
-        // - useBiometry
-        // Une fois la requête terminée, appelez completion(true/false) selon le résultat
-
-        // Simulons un succès immédiat
+        // Simulate a network request
         DispatchQueue.global().asyncAfter(deadline: .now() + 1) {
+            // Mock success
+            LocalUserStore.saveUsername(username)
             completion(true)
         }
     }

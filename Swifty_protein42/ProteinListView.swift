@@ -55,11 +55,11 @@ struct ProteinListView: View {
                 }
 
                 // Texte en bas de la vue
-                Text("Réalisé par Sasso Stark et Celiniya")
+                Text("Created by Sasso Stark & Celiniya")
                     .padding()
                     .font(.footnote)
             }
-            .navigationTitle("Liste des Protéines")
+            .navigationTitle("ProteinList")
             .navigationBarTitleDisplayMode(.inline)
             .onAppear(perform: loadLigands)
             .sheet(isPresented: $showProteinData) {

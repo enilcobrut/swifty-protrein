@@ -88,3 +88,22 @@ class KeychainHelper {
         SecItemDelete(query as CFDictionary)
     }
 }
+
+class LocalUserStore {
+    private static let registeredUsernamesKey = "registeredUsernames"
+
+    static func isUsernameTaken(_ username: String) -> Bool {
+        let lowercased = username.lowercased()
+        let registered = UserDefaults.standard.stringArray(forKey: registeredUsernamesKey) ?? []
+        return registered.contains(lowercased)
+    }
+
+    static func saveUsername(_ username: String) {
+        let lowercased = username.lowercased()
+        var registered = UserDefaults.standard.stringArray(forKey: registeredUsernamesKey) ?? []
+        if !registered.contains(lowercased) {
+            registered.append(lowercased)
+            UserDefaults.standard.setValue(registered, forKey: registeredUsernamesKey)
+        }
+    }
+}
